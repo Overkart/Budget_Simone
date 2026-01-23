@@ -1,0 +1,35 @@
+GUIDA ALL'USO DELL'APP GESTIONE FINANZE 2026
+
+Ho trasformato il tuo file in una Web App moderna e responsive (PWA). Ecco come usarla al meglio su PC e Mobile.
+
+1. INSTALLAZIONE (PWA)
+   - L'app ora supporta l'installazione. Quando apri il file in un browser moderno:
+     - Su Desktop (Chrome/Edge): Vedrai un'icona (+) nella barra degli indirizzi o il pulsante "📲 Installa App" in alto a destra.
+     - Su Android (Chrome): Tocca "Aggiungi a schermata Home" dal menu o usa il pulsante "Installa App".
+     - Su iOS (Safari): Tocca il tasto Condividi -> "Aggiungi alla schermata Home".
+   - Questo creerà un'icona "App" sul tuo dispositivo che si aprirà a tutto schermo senza barre del browser.
+
+2. GESTIONE DATI E SINCRONIZZAZIONE (IMPORTANTE)
+   Poiché l'app vive in un singolo file HTML, i dati vengono salvati nella memoria del browser (LocalStorage) del dispositivo che stai usando.
+   
+   Esempio:
+   - Se aggiungi una spesa dal PC, questa NON apparirà automaticamente sul telefono.
+   
+   COME SINCRONIZZARE (Metodo OneDrive):
+   1. Sul dispositivo dove hai fatto modifiche (es. PC):
+      - Clicca su "💾 Backup".
+      - Salva il file `.json` nella stessa cartella di OneDrive dove tieni l'HTML.
+   2. Sull'altro dispositivo (es. Mobile):
+      - Apri l'app.
+      - Clicca su "📂 Ripristina".
+      - Seleziona l'ultimo file di backup salvato su OneDrive.
+   
+   Questo è il metodo più sicuro e privato per mantenere i dati allineati senza usare server esterni a pagamento.
+
+3. NOVITÀ AGGIUNTE ORA
+   - Layout Mobile ottimizzato: Le card del saldo ora sono impilate per una migliore leggibilità su schermi piccoli.
+   - Pulsante Installazione: Per trasformare il sito in una vera App.
+   - Icona dedicata: Creata un'icona con il simbolo dell'Euro per la schermata home.
+   - Manifesto & Service Worker: Tecnologie necessarie per farla funzionare offline e come app nativa.
+
+Nota: Per far funzionare l'installazione PWA, il file deve essere idealmente servito tramite un server locale o web (es. GitHub Pages), ma su Android spesso funziona anche aprendo il file html direttamente se il browser lo permette. Se hai difficoltà con l'installazione da file locale, contattami per mettere l'app online (es. su GitHub Pages gratuito).

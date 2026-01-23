@@ -1,0 +1,7 @@
+Data;Categoria;Descrizione;Entrate;Uscita;Saldo;Note
+01/01/2026;Saldo Iniziale;Riporto anno precedente;1000,00;0,00;1000,00;
+04/01/2026;Casa;Affitto Gennaio;0,00;600,00;400,00;
+05/01/2026;Alimentari;Spesa Supermercato;0,00;120,50;279,50;
+10/01/2026;Trasporti;Benzina;0,00;50,00;229,50;
+15/01/2026;Lavoro;Stipendio Mensile;2400,00;0,00;2629,50;
+20/01/2026;Svago;Cinema e Pizza;0,00;45,00;2584,50;

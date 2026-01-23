@@ -1,0 +1,38 @@
+ISTRUZIONI PER ATTIVARE LA SINCRONIZZAZIONE AUTOMATICA (GOOGLE SHEETS)
+
+Per sincronizzare i dati tra PC e Cellulare usando Google Sheets come "database" gratuito e privato, segui questi passaggi una sola volta:
+
+1. PREPARAZIONE DEL FOGLIO GOOGLE
+   - Vai su https://sheets.google.com e crea un "Nuovo foglio di lavoro" vuoto.
+   - Dai un nome al foglio, es: "Database Finanze".
+   - Nel foglio, rinomina la linguetta in basso da "Foglio1" a "Dati" (Importante!).
+
+2. INSERIMENTO DEL CODICE
+   - Nel menu in alto del foglio Google, clicca su "Estensioni" > "Apps Script".
+   - Si aprirà una nuova scheda con un editor di codice.
+   - CANCELLA tutto il codice preesistente.
+   - APRI il file "Codice_Google_Sheet.gs" che trovi ora nella tua cartella PC.
+   - COPIA tutto il testo e INCOLLALO nell'editor di Apps Script.
+   - Clicca sull'icona del dischetto (Salva).
+
+3. PUBBLICAZIONE (DEPLOY)
+   - In alto a destra nell'editor Apps Script, clicca il pulsante blu "Esegui il deployment" > "Nuovo deployment".
+   - Clicca sulla rondella (ingranaggio) accanto a "Seleziona tipo" e scegli "App web".
+   - Compila così:
+     * Descrizione: "Finanze API" (o quello che vuoi).
+     * Esegui come: "Io" (il tuo indirizzo email).
+     * Chi può accedere: "Chiunque" (Questo è FONDAMENTALE affinché l'App funzioni dal telefono senza login complessi. Il link sarà segreto, non condividerlo).
+   - Clicca "Esegui il deployment".
+   - Ti chiederà "Autorizza accesso". Clicca, scegli il tuo account Google.
+   - Vedrai un avviso "Google hasn't verified this app" (perché l'hai fatta tu ora). Clicca "Advanced" (Avanzate) e poi "Go to ... (unsafe)". È sicuro, è il tuo codice.
+   - Copia l'URL che appare (Web App URL). Dovrebbe finire con "/exec".
+
+4. COLLEGARE L'APP
+   - Apri la tua app "Gestione Finanze 2026".
+   - Clicca sul nuovo pulsante "☁️ Cloud" (che aggiungerò tra poco).
+   - Incolla l'URL che hai copiato.
+   - Clicca "Salva e Sincronizza".
+
+FATTO! 
+Ora ogni modifica che fai sull'App verrà salvata sul Foglio Google in tempo reale.
+Se apri l'app dal telefono, incolla lo stesso URL e vedrai gli stessi dati.

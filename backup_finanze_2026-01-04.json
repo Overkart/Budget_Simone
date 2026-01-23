@@ -1,0 +1,63 @@
+[
+  {
+    "date": "2026-01-01",
+    "category": "Saldo Iniziale",
+    "desc": "Riporto anno precedente",
+    "in": 1000,
+    "out": 0
+  },
+  {
+    "date": "2026-01-04",
+    "category": "Casa",
+    "desc": "Affitto Gennaio",
+    "in": 0,
+    "out": 600
+  },
+  {
+    "date": "2026-01-04",
+    "category": "Lavoro",
+    "in": 2400,
+    "out": 0
+  },
+  {
+    "date": "2026-01-04",
+    "category": "Alimentari",
+    "method": "",
+    "in": 0,
+    "out": 150
+  },
+  {
+    "date": "2026-01-05",
+    "category": "Alimentari",
+    "desc": "Spesa Supermercato",
+    "in": 0,
+    "out": 120.5
+  },
+  {
+    "date": "2026-01-10",
+    "category": "Trasporti",
+    "desc": "Benzina",
+    "in": 0,
+    "out": 50
+  },
+  {
+    "date": "2026-01-10",
+    "category": "Lavoro",
+    "in": 10000,
+    "out": 0
+  },
+  {
+    "date": "2026-01-15",
+    "category": "Lavoro",
+    "desc": "Stipendio Mensile",
+    "in": 2400,
+    "out": 0
+  },
+  {
+    "date": "2026-01-20",
+    "category": "Svago",
+    "desc": "Cinema e Pizza",
+    "in": 0,
+    "out": 45
+  }
+]

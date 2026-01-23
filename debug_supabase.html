@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Debug Supabase</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+
+<body>
+    <h1>Debug Supabase Transactions</h1>
+    <pre id="output">Loading...</pre>
+
+    <script>
+        const SUPABASE_URL = 'https://vhiesdattawhxxvezpcx.supabase.co';
+        const SUPABASE_KEY = 'sb_publishable_4Rm9Od2TsKHiJx1XoUd2Dw__MiMqVp2';
+        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+        async function run() {
+            const { data, error } = await supabaseClient
+                .from('transactions')
+                .select('*')
+                .eq('recurring', true)
+                .limit(5);
+
+            if (error) {
+                document.getElementById('output').innerText = 'Error: ' + JSON.stringify(error, null, 2);
+                return;
+            }
+
+            document.getElementById('output').innerText = 'Found ' + data.length + ' recurring rows:\n' + JSON.stringify(data, null, 2);
+        }
+
+        run();
+    </script>
+</body>
+
+</html>
