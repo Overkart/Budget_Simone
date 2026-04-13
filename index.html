@@ -1019,6 +1019,27 @@
             border: 1px solid var(--border);
         }
 
+        .selection-sticky-wrapper {
+            position: sticky;
+            top: -1px; /* Slight offset to ensure it overlaps perfectly */
+            z-index: 90;
+            background: var(--header-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            padding: 12px 0;
+            margin-top: -12px; /* Pull it up to counteract charts margin */
+            margin-bottom: 15px;
+            border-bottom: 1px solid transparent;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            display: none;
+        }
+
+        .selection-sticky-wrapper.visible {
+            display: flex;
+            border-bottom-color: var(--border);
+            animation: slideInDown 0.3s ease-out;
+        }
+
         .delete-btn {
             color: var(--text-secondary);
             cursor: pointer;
@@ -1581,13 +1602,14 @@
                 </div>
             </div>
 
-            <!-- Selection Totals moved here as a floating/sticky bar if needed, 
-                 but for now just keeping it above the table if active -->
-            <div style="display: flex; justify-content: flex-end; align-items: center; margin-bottom: 15px; gap: 10px;">
-                <span id="selTotals" class="selection-info" style="display:none;"></span>
-                <button id="btnDeleteSelected" class="btn-delete-multi" onclick="deleteSelected()">
-                    🗑️ Elimina (<span id="selCount">0</span>)
-                </button>
+            <!-- Selection Bar (Sticky) -->
+            <div id="selectionWrapper" class="selection-sticky-wrapper">
+                <div style="display: flex; justify-content: flex-end; align-items: center; width: 100%; gap: 10px;">
+                    <span id="selTotals" class="selection-info"></span>
+                    <button id="btnDeleteSelected" class="btn-delete-multi" onclick="deleteSelected()">
+                        🗑️ Elimina (<span id="selCount">0</span>)
+                    </button>
+                </div>
             </div>
             <div class="table-container">
                 <table id="financeTable">
@@ -2630,9 +2652,12 @@
             const spanCount = document.getElementById('selCount');
             const selTotals = document.getElementById('selTotals');
 
+            const wrapper = document.getElementById('selectionWrapper');
+
             if (spanCount) spanCount.textContent = count;
 
             if (count > 0) {
+                if (wrapper) wrapper.classList.add('visible');
                 if (btn) btn.style.display = 'inline-flex';
 
                 // Calculate Totals
@@ -2658,6 +2683,7 @@
                 }
 
             } else {
+                if (wrapper) wrapper.classList.remove('visible');
                 if (btn) btn.style.display = 'none';
                 if (selTotals) selTotals.style.display = 'none';
             }
