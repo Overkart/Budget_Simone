@@ -11,7 +11,7 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Budget">
-    <title>Gestione Finanze 2026</title>
+    <title>Gestione Finanze</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -51,6 +51,7 @@
             --border: #e8e9eb;
             --header-bg: rgba(255, 255, 255, 0.85);
             --input-bg: #f1f2f4;
+            --card-bg: #ffffff;
             --modal-bg: #ffffff;
             --overlay-bg: rgba(18, 20, 23, 0.4);
 
@@ -76,6 +77,7 @@
                 --border: rgba(255, 255, 255, 0.08);
                 --header-bg: rgba(15, 23, 42, 0.8);
                 --input-bg: rgba(15, 23, 42, 0.5);
+                --card-bg: #161b26;
                 --modal-bg: rgba(15, 23, 42, 0.95);
                 --overlay-bg: rgba(0, 0, 0, 0.8);
 
@@ -245,15 +247,15 @@
             background: var(--header-bg);
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
-            padding: 24px 32px;
+            padding: calc(env(safe-area-inset-top) + 20px) 24px 15px 24px;
             border-bottom: 1px solid var(--border);
             z-index: 100;
             transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
         .fixed-header-section.compact {
-            padding: 10px 24px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            padding: calc(env(safe-area-inset-top) + 8px) 20px 8px 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
         }
 
         .fixed-header-section.compact header {
@@ -766,8 +768,8 @@
         }
 
         @media (max-width: 768px) {
-            .scroll-badge {
-                /* Display is controlled by class but we ensure it can show on mobile */
+            .fixed-header-section h1 {
+                font-size: 1.4rem !important;
             }
         }
 
@@ -1017,6 +1019,27 @@
             padding: 6px 12px;
             border-radius: 6px;
             border: 1px solid var(--border);
+        }
+
+        .selection-sticky-wrapper {
+            position: sticky;
+            top: -1px; /* Slight offset to ensure it overlaps perfectly */
+            z-index: 90;
+            background: var(--header-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            padding: 12px 0;
+            margin-top: -12px; /* Pull it up to counteract charts margin */
+            margin-bottom: 15px;
+            border-bottom: 1px solid transparent;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            display: none;
+        }
+
+        .selection-sticky-wrapper.visible {
+            display: flex;
+            border-bottom-color: var(--border);
+            animation: slideInDown 0.3s ease-out;
         }
 
         .delete-btn {
@@ -1489,14 +1512,175 @@
         }
 
         .recurring-select option {
-            background-color: var(--card-bg);
-            color: var(--text-primary);
+            background-color: #ffffff;
+            color: #121417;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            .recurring-select option {
+                background-color: #161b26;
+                color: #ffffff;
+            }
         }
 
         .filter-actions button {
             padding: 4px 10px;
             font-size: 0.8rem;
             width: auto;
+        }
+
+        /* YEAR SELECTOR & CARRYOVER STYLES */
+        .year-nav-wrapper {
+            display: inline-flex;
+            align-items: center;
+            gap: 2px;
+            background: var(--card-glass);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 2px 4px;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
+        }
+
+        .btn-year-nav {
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            width: 28px;
+            height: 28px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: all 0.2s ease;
+            user-select: none;
+        }
+
+        .btn-year-nav:hover {
+            background: rgba(0, 0, 0, 0.05);
+            color: var(--text-primary);
+            transform: scale(1.05);
+        }
+
+        .btn-year-nav:active {
+            transform: scale(0.95);
+        }
+
+        .year-select-box {
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+        }
+
+        .year-select {
+            appearance: none;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            background-color: var(--input-bg, #f1f2f4);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: var(--text-primary, #121417) !important;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.05rem;
+            font-weight: 700;
+            padding: 3px 26px 3px 10px;
+            cursor: pointer;
+            outline: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%23637083' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 8px center;
+            background-size: 10px 10px;
+            transition: all 0.2s ease;
+        }
+
+        .year-select:hover {
+            border-color: var(--accent);
+        }
+
+        .year-select:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 2px var(--glow-color);
+        }
+
+        /* LIGHT MODE: Clear white background and high-contrast dark text */
+        .year-select option {
+            background-color: #ffffff !important;
+            color: #121417 !important;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1rem;
+            font-weight: 600;
+            padding: 8px 12px;
+        }
+
+        /* DARK MODE */
+        @media (prefers-color-scheme: dark) {
+            .btn-year-nav:hover {
+                background: rgba(255, 255, 255, 0.1);
+                color: #ffffff;
+            }
+
+            .year-select {
+                background-color: rgba(255, 255, 255, 0.08);
+                border-color: rgba(255, 255, 255, 0.15);
+                color: #ffffff !important;
+                background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%23a0aec0' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
+            }
+
+            .year-select option {
+                background-color: #161b26 !important;
+                color: #ffffff !important;
+            }
+        }
+
+        .year-initial-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(25, 119, 242, 0.1);
+            border: 1px solid rgba(25, 119, 242, 0.25);
+            border-radius: 12px;
+            padding: 4px 10px;
+            font-size: 0.8rem;
+            white-space: nowrap;
+            transition: all 0.2s ease;
+        }
+
+        .year-initial-pill .pill-label {
+            color: var(--text-secondary);
+            font-size: 0.72rem;
+            text-transform: uppercase;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        .year-initial-pill .pill-value {
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 700;
+            font-size: 0.9rem;
+            color: var(--accent, #1977f2);
+        }
+
+        /* INITIAL BALANCE ROW IN TABLE */
+        tr.initial-balance-row {
+            background: rgba(25, 119, 242, 0.05) !important;
+            border-top: 1px solid rgba(25, 119, 242, 0.25);
+            border-bottom: 1px solid rgba(25, 119, 242, 0.25);
+            font-weight: 500;
+        }
+
+        tr.initial-balance-row td {
+            padding: 10px 14px;
+            color: var(--text-secondary);
+        }
+
+        tr.initial-balance-row td.saldo-cell {
+            font-weight: 700;
+            font-size: 0.95rem;
+        }
+
+        tr.initial-balance-row:hover {
+            background: rgba(25, 119, 242, 0.1) !important;
         }
     </style>
 </head>
@@ -1513,30 +1697,53 @@
 
         <!-- FIXED TOP SECTION -->
         <div class="fixed-header-section">
-            <header>
-                <div>
-                    <h1>Gestione Finanze 2026</h1>
-                    <p class="subtitle" style="margin:0; font-size:0.8rem; color:var(--text-secondary);">Dashboard
-                        Personale</p>
+            <div class="top-nav-bar"
+                style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; padding-bottom: 12px; border-bottom: 1px solid var(--border); flex-wrap: wrap; gap: 10px;">
+                <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
+                    <h1 style="font-size: 1.5rem; margin: 0; color: var(--text-primary) !important; letter-spacing: -0.5px; white-space: nowrap;">Gestione Finanze</h1>
+                    
+                    <div class="year-nav-wrapper">
+                        <button type="button" class="btn-year-nav" onclick="navigateYear(-1)" title="Anno Precedente">◀</button>
+                        <div class="year-select-box">
+                            <select id="yearSelector" class="year-select" onchange="changeYear(this.value)" title="Seleziona Anno">
+                                <!-- Popolato dinamicamente -->
+                            </select>
+                        </div>
+                        <button type="button" class="btn-year-nav" onclick="navigateYear(1)" title="Anno Successivo">▶</button>
+                    </div>
+
+                    <div id="yearInitialBalancePill" class="year-initial-pill" title="Saldo finale dell'anno precedente riportato come saldo iniziale di quest'anno">
+                        <span class="pill-label">Saldo Iniziale</span>
+                        <span id="initialBalancePillValue" class="pill-value">€ 0,00</span>
+                    </div>
                 </div>
-                <div style="display:flex; align-items:center; gap:16px;">
-                    <div class="header-main-actions" style="display:flex; gap:10px;">
-                        <button class="btn-premium-action" onclick="addRow()">
-                            Nuova
-                        </button>
-                    </div>
 
-                    <div style="width: 1px; height: 24px; background: var(--border);"></div>
+                <div style="display: flex; align-items: center; gap: 8px;">
+                    <button class="btn-header-secondary" onclick="toggleSettingsMenu()" ontouchstart="toggleSettingsMenu()"
+                        style="position: relative; z-index: 999; border: 1px solid var(--accent); color: var(--accent); width: auto; padding: 0 12px; display: flex; align-items: center; gap: 6px; height: 38px; border-radius: 12px; background: var(--card-glass); cursor: pointer; pointer-events: auto;">
+                        <span style="font-size: 1.2rem; pointer-events: none;">⚙️</span>
+                        <span style="font-size: 0.85rem; font-weight: 700; pointer-events: none;">Impostazioni</span>
+                    </button>
+                </div>
+            </div>
 
-                    <div style="display:flex; align-items:center; gap:8px;">
-                        <button class="btn-header-secondary" onclick="downloadCSV()" title="Esporta CSV">📊</button>
-                        <button class="btn-header-secondary" onclick="clearData()" title="Reset Dati">🗑️</button>
-                        <button class="btn-header-secondary" onclick="syncData(false)" title="Sincronizza">🔄</button>
-                        <button class="btn-header-secondary" onclick="openSettings()" title="Impostazioni">⚙️</button>
-                    </div>
+            <header style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                <div class="header-main-actions" style="display:flex; gap:10px; align-items: center;">
+                    <button class="btn-premium-action" onclick="addRow()" style="padding: 10px 22px; font-size: 1rem;">
+                        + Nuova
+                    </button>
+                    <p class="subtitle"
+                        style="margin:0; font-size:0.75rem; color:var(--text-secondary); line-height: 1.2;">
+                        Dashboard<br>Personale</p>
+                </div>
+
+                <div style="display:flex; align-items:center; gap:8px;">
+                    <button class="btn-header-secondary" onclick="downloadCSV()" title="Esporta CSV">📊</button>
+                    <button class="btn-header-secondary" onclick="syncData(false)" title="Sincronizza">🔄</button>
+                    <button class="btn-header-secondary" onclick="clearData()" title="Reset Dati">🗑️</button>
 
                     <div class="sync-status" id="syncStatus" title="Stato Sincronizzazione"
-                        style="display:none; margin-left: 8px;">
+                        style="display:none; margin-left: 4px;">
                         <div class="sync-dot" id="syncDot"></div>
                     </div>
                 </div>
@@ -1556,7 +1763,7 @@
                     <span class="kpi-value" id="balanceToday">€ 0,00</span>
                 </div>
                 <div class="kpi-card">
-                    <span class="kpi-label">Previsto</span>
+                    <span class="kpi-label">Previsto Futuro</span>
                     <span class="kpi-value blue" id="netBalance">€ 0,00</span>
                 </div>
             </div>
@@ -1578,13 +1785,14 @@
                 </div>
             </div>
 
-            <!-- Selection Totals moved here as a floating/sticky bar if needed, 
-                 but for now just keeping it above the table if active -->
-            <div style="display: flex; justify-content: flex-end; align-items: center; margin-bottom: 15px; gap: 10px;">
-                <span id="selTotals" class="selection-info" style="display:none;"></span>
-                <button id="btnDeleteSelected" class="btn-delete-multi" onclick="deleteSelected()">
-                    🗑️ Elimina (<span id="selCount">0</span>)
-                </button>
+            <!-- Selection Bar (Sticky) -->
+            <div id="selectionWrapper" class="selection-sticky-wrapper">
+                <div style="display: flex; justify-content: flex-end; align-items: center; width: 100%; gap: 10px;">
+                    <span id="selTotals" class="selection-info"></span>
+                    <button id="btnDeleteSelected" class="btn-delete-multi" onclick="deleteSelected()">
+                        🗑️ Elimina (<span id="selCount">0</span>)
+                    </button>
+                </div>
             </div>
             <div class="table-container">
                 <table id="financeTable">
@@ -1746,6 +1954,33 @@
                 Stato attuale: <strong id="connectionStatus">Connesso</strong>
             </div>
 
+            <div style="border-top: 1px dashed var(--border); padding-top: 15px; margin-top: 10px;">
+                <h3 style="margin-bottom: 12px; font-size: 1.1rem;">🔔 Notifiche Scadenze</h3>
+                <div class="form-group" style="margin-bottom: 12px;">
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <input type="checkbox" id="notifyToggle" style="width: 20px; height: 20px;">
+                        <label for="notifyToggle"
+                            style="font-size: 0.9rem; color: var(--text-secondary); cursor: pointer;">Attiva avvisi
+                            scadenze</label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" style="font-size: 0.8rem;">Preavviso (giorni)</label>
+                    <select id="notifyDays" class="form-input"
+                        style="width: 100%; border: 1px solid var(--border); border-radius: 8px; padding: 8px;">
+                        <option value="0">Lo stesso giorno</option>
+                        <option value="1">1 giorno prima</option>
+                        <option value="2" selected>2 giorni prima</option>
+                        <option value="3">3 giorni prima</option>
+                        <option value="7">1 settimana prima</option>
+                    </select>
+                </div>
+                <button class="btn-premium-action" onclick="saveNotificationSettings()"
+                    style="width: 100%; margin-top: 15px; background: var(--accent); color: white;">
+                    Salva Notifiche
+                </button>
+            </div>
+
             <div style="display:flex; justify-content:flex-end; gap:10px;">
                 <button onclick="closeSettings()" style="width:auto">Chiudi</button>
             </div>
@@ -1794,6 +2029,99 @@
         let categories = [];
         let paymentMethods = [];
         let isSyncing = false;
+        let currentYear = localStorage.getItem('budget_selected_year') || new Date().getFullYear().toString();
+
+        function getInitialBalanceForYear(year) {
+            if (!year || year === 'all') return 0;
+            const yearInt = parseInt(year);
+            if (isNaN(yearInt)) return 0;
+            const yearStart = `${yearInt}-01-01`;
+
+            return tableData.reduce((acc, row) => {
+                if (row && row.date && typeof row.date === 'string' && row.date < yearStart) {
+                    const inc = parseFloat(row.in) || 0;
+                    const exp = parseFloat(row.out) || 0;
+                    return acc + (inc - exp);
+                }
+                return acc;
+            }, 0);
+        }
+
+        function getYearData() {
+            if (!currentYear || currentYear === 'all') {
+                return [...tableData];
+            }
+            return tableData.filter(row => {
+                if (!row || !row.date) return false;
+                const dStr = typeof row.date === 'string' ? row.date : '';
+                return dStr.startsWith(currentYear);
+            });
+        }
+
+        function updateYearSelector() {
+            const selector = document.getElementById('yearSelector');
+            if (!selector) return;
+
+            const yearsSet = new Set();
+            const calYear = new Date().getFullYear();
+            yearsSet.add(calYear);
+
+            tableData.forEach(row => {
+                if (row && row.date && typeof row.date === 'string' && row.date.length >= 4) {
+                    const y = parseInt(row.date.substring(0, 4));
+                    if (!isNaN(y) && y >= 2000 && y <= 2100) {
+                        yearsSet.add(y);
+                    }
+                }
+            });
+
+            if (currentYear && currentYear !== 'all') {
+                const y = parseInt(currentYear);
+                if (!isNaN(y)) yearsSet.add(y);
+            }
+
+            const sortedYears = Array.from(yearsSet).sort((a, b) => a - b);
+
+            let html = '';
+            sortedYears.forEach(y => {
+                html += `<option value="${y}" ${String(y) === String(currentYear) ? 'selected' : ''}>${y}</option>`;
+            });
+            html += `<option value="all" ${currentYear === 'all' ? 'selected' : ''}>Tutti gli anni</option>`;
+
+            selector.innerHTML = html;
+            document.title = (currentYear && currentYear !== 'all') ? `Gestione Finanze ${currentYear}` : 'Gestione Finanze';
+        }
+
+        function changeYear(newYear) {
+            currentYear = newYear;
+            localStorage.setItem('budget_selected_year', currentYear);
+            if (activeFilters['date']) {
+                delete activeFilters['date'];
+                updateFilterIcons();
+            }
+            updateYearSelector();
+            runFilter();
+            scrollToCurrentDate();
+        }
+
+        function navigateYear(direction) {
+            if (!currentYear || currentYear === 'all') {
+                currentYear = new Date().getFullYear().toString();
+            } else {
+                const parsed = parseInt(currentYear);
+                if (!isNaN(parsed)) {
+                    currentYear = (parsed + direction).toString();
+                }
+            }
+            localStorage.setItem('budget_selected_year', currentYear);
+            if (activeFilters['date']) {
+                delete activeFilters['date'];
+                updateFilterIcons();
+            }
+            updateYearSelector();
+            runFilter();
+            scrollToCurrentDate();
+        }
 
         // Ensure row IDs are correct for Supabase (UUIDs or strings)
         function generateId() {
@@ -1836,6 +2164,7 @@
                     categories(name),
                     payment_methods(name)
                 `)
+                .order('date', { ascending: true })
                 .order('sort_order', { ascending: true });
 
             if (error) {
@@ -1856,7 +2185,8 @@
                 sort_order: t.sort_order
             }));
 
-            renderTable(tableData);
+            updateYearSelector();
+            runFilter();
             updateSyncStatus('online', 'Sincronizzato');
         }
 
@@ -1882,9 +2212,9 @@
             if (txt) txt.innerText = text;
         }
 
-        function updateDashboard(data) {
+        function updateDashboard(data, initialBalance = 0) {
             let totIn = 0; let totOut = 0;
-            let balToday = 0;
+            let balToday = initialBalance;
             const today = new Date().toISOString().split('T')[0];
             const categoryExpenses = {};
 
@@ -1912,11 +2242,22 @@
             btEl.innerText = '€ ' + fmt.format(balToday);
             btEl.className = `kpi-value ${balToday >= 0 ? 'blue' : 'red'}`;
 
-            const balance = totIn - totOut;
+            const balance = initialBalance + totIn - totOut;
             document.getElementById('netBalance').innerText = '€ ' + fmt.format(balance);
             document.getElementById('netBalance').className = `kpi-value ${balance >= 0 ? 'blue' : 'red'}`;
 
-            renderMonthlyChart(data);
+            // Update Initial Balance Pill in header
+            const pillVal = document.getElementById('initialBalancePillValue');
+            const pillContainer = document.getElementById('yearInitialBalancePill');
+            if (pillVal) {
+                pillVal.innerText = formatCurrency(initialBalance);
+                pillVal.style.color = initialBalance >= 0 ? 'var(--blue, #1977f2)' : 'var(--red, #ff4070)';
+            }
+            if (pillContainer) {
+                pillContainer.style.display = (currentYear === 'all') ? 'none' : 'inline-flex';
+            }
+
+            renderMonthlyChart(data, initialBalance);
             const chartContainer = document.getElementById('categoryChart');
             chartContainer.innerHTML = '';
 
@@ -1948,7 +2289,7 @@
         }
 
         let monthlyChartInstance = null;
-        function renderMonthlyChart(data) {
+        function renderMonthlyChart(data, initialBalance = 0) {
             const canvas = document.getElementById('monthlyChart');
             if (!canvas) return;
             const ctx = canvas.getContext('2d');
@@ -1966,8 +2307,8 @@
             const incomeData = monthlyData.map(d => d.in);
             const expenseData = monthlyData.map(d => d.out);
 
-            // Calculate Cumulative Balance
-            let runningBalance = 0;
+            // Calculate Cumulative Balance starting from Initial Balance
+            let runningBalance = initialBalance;
             const balanceData = monthlyData.map(d => {
                 const net = d.in - d.out;
                 runningBalance += net;
@@ -2085,7 +2426,11 @@
             });
         }
 
-        function renderTable(data = []) {
+        function renderTable(data = [], initialBalance = null) {
+            if (initialBalance === null) {
+                initialBalance = getInitialBalanceForYear(currentYear);
+            }
+
             // Safety: Filter out null/undefined rows and normalize dates
             const validData = data.filter(r => r && typeof r === 'object');
 
@@ -2102,7 +2447,7 @@
             // sort_order is already handled by Supabase query order
             // No need to client-sort if we trust the database order.
             // validData.sort((a, b) => a.sort_order - b.sort_order);
-            updateDashboard(validData);
+            updateDashboard(validData, initialBalance);
 
             const tbody = document.getElementById('tableBody');
 
@@ -2112,10 +2457,39 @@
             if (hCb) hCb.checked = false;
             updateSelectionUI();
 
-            let currentBalance = 0;
+            let currentBalance = initialBalance;
             const todayStr = new Date().toISOString().split('T')[0]; // YYYY-MM-DD
 
             const isMobile = window.innerWidth <= 768;
+
+            // Render Initial Balance row at the top if viewing a specific year and no column filter active
+            if (currentYear && currentYear !== 'all' && Object.keys(activeFilters).length === 0) {
+                const initTr = document.createElement('tr');
+                initTr.className = 'initial-balance-row';
+                const prevYear = parseInt(currentYear) - 1;
+                const balClass = initialBalance >= 0 ? 'positive' : 'negative';
+
+                initTr.innerHTML = `
+                    <td>
+                        <div style="display:flex; justify-content:flex-start; opacity: 0.5;" title="Riga automatica calcolata dal saldo di chiusura dell'anno precedente">🔒</div>
+                    </td>
+                    <td data-label="Data"><strong>01/01/${currentYear}</strong></td>
+                    <td data-label="Categoria">
+                        <div style="display:flex; align-items:center; gap:6px;">
+                            <span class="cat-icon">🏦</span>
+                            <strong style="color:var(--text-primary);">Saldo Iniziale</strong>
+                            <span style="font-size:0.75rem; color:var(--text-secondary);">(Riporto ${prevYear})</span>
+                        </div>
+                    </td>
+                    <td data-label="Metodo"><span style="color:var(--text-secondary);">-</span></td>
+                    <td data-label="Ricorrente" style="text-align:center; vertical-align:middle;"><span style="color:var(--text-secondary);">-</span></td>
+                    <td data-label="Entrata" class="amount-cell empty-amount">-</td>
+                    <td data-label="Uscita" class="amount-cell empty-amount">-</td>
+                    <td data-label="Saldo" class="saldo-cell ${balClass}">${formatCurrency(initialBalance)}</td>
+                    <td data-label="Azioni"></td>
+                `;
+                tbody.appendChild(initTr);
+            }
 
             validData.forEach((row) => {
                 const tr = document.createElement('tr');
@@ -2392,13 +2766,26 @@
                 row[field] = oldValue; // Rollback
                 updateSyncStatus('error', 'Errore Salvataggio');
                 alert("Errore durante il salvataggio: " + error.message);
-                renderTable(tableData);
+                runFilter();
             }
         }
 
         function addRow() {
             const today = new Date().toISOString().split('T')[0];
-            document.getElementById('newDate').value = today;
+            const todayYear = today.split('-')[0];
+            let defaultDate = today;
+            let defaultREnd = new Date(new Date().getFullYear(), 11, 31).toISOString().split('T')[0];
+
+            if (currentYear && currentYear !== 'all') {
+                if (currentYear !== todayYear) {
+                    defaultDate = `${currentYear}-01-01`;
+                    defaultREnd = `${currentYear}-12-31`;
+                } else {
+                    defaultREnd = `${currentYear}-12-31`;
+                }
+            }
+
+            document.getElementById('newDate').value = defaultDate;
             document.getElementById('newCat').value = '';
             document.getElementById('newMethod').value = '';
             document.getElementById('newAmount').value = '€ 0,00';
@@ -2406,7 +2793,7 @@
             document.getElementById('newRecurring').checked = false;
 
             // Reset recurring fields
-            document.getElementById('newREnd').value = new Date(new Date().getFullYear(), 11, 31).toISOString().split('T')[0];
+            document.getElementById('newREnd').value = defaultREnd;
             document.getElementById('newRFreq').value = 'month';
             document.getElementById('recurringFields').style.display = 'none';
 
@@ -2536,7 +2923,12 @@
 
                 if (error) throw error;
 
-                await fetchTransactions();
+                const txYear = (date && date.length >= 4) ? date.substring(0, 4) : '';
+                if (currentYear !== 'all' && txYear && txYear !== currentYear) {
+                    changeYear(txYear);
+                } else {
+                    await fetchTransactions();
+                }
                 updateSyncStatus('online', 'Sincronizzato');
             } catch (error) {
                 updateSyncStatus('error', 'Errore Salvataggio');
@@ -2599,9 +2991,12 @@
             const spanCount = document.getElementById('selCount');
             const selTotals = document.getElementById('selTotals');
 
+            const wrapper = document.getElementById('selectionWrapper');
+
             if (spanCount) spanCount.textContent = count;
 
             if (count > 0) {
+                if (wrapper) wrapper.classList.add('visible');
                 if (btn) btn.style.display = 'inline-flex';
 
                 // Calculate Totals
@@ -2627,6 +3022,7 @@
                 }
 
             } else {
+                if (wrapper) wrapper.classList.remove('visible');
                 if (btn) btn.style.display = 'none';
                 if (selTotals) selTotals.style.display = 'none';
             }
@@ -2649,10 +3045,111 @@
         };
 
         // SETTINGS UI
-        window.openSettings = function () {
-            document.getElementById('supabaseUrl').value = SUPABASE_URL;
-            document.getElementById('supabaseKey').value = '********************';
-            document.getElementById('settingsModal').classList.add('open');
+        window.toggleSettingsMenu = function (e) {
+            if (e) {
+                e.preventDefault();
+                e.stopPropagation();
+            }
+            try {
+                const modal = document.getElementById('settingsModal');
+                if (!modal) return;
+
+                const urlField = document.getElementById('supabaseUrl');
+                const keyField = document.getElementById('supabaseKey');
+                if (urlField) urlField.value = SUPABASE_URL;
+                if (keyField) keyField.value = '********************';
+
+                // Load Notification settings
+                const notifyDays = localStorage.getItem('budget_notify_days') || '2';
+                const notifyEnabled = localStorage.getItem('budget_notify_enabled') === 'true';
+
+                const daysField = document.getElementById('notifyDays');
+                const toggleField = document.getElementById('notifyToggle');
+
+                if (daysField) daysField.value = notifyDays;
+                if (toggleField) toggleField.checked = notifyEnabled;
+
+                modal.classList.add('open');
+            } catch (err) {
+                alert("Errore apertura impostazioni: " + err.message);
+            }
+        }
+
+        window.saveNotificationSettings = async function () {
+            const enabled = document.getElementById('notifyToggle').checked;
+            const days = document.getElementById('notifyDays').value;
+
+            if (enabled && Notification.permission !== 'granted') {
+                const permission = await Notification.requestPermission();
+                if (permission !== 'granted') {
+                    document.getElementById('notifyToggle').checked = false;
+                    alert("Permesso notifiche negato dal browser.");
+                    return;
+                }
+            }
+
+            localStorage.setItem('budget_notify_enabled', enabled);
+            localStorage.setItem('budget_notify_days', days);
+
+            if (enabled) {
+                checkDueDatesForNotifications();
+                alert("Impostazioni salvate. Notifiche attivate!");
+            } else {
+                alert("Notifiche disattivate.");
+            }
+        }
+
+        async function checkDueDatesForNotifications() {
+            const enabled = localStorage.getItem('budget_notify_enabled') === 'true';
+            if (!enabled || Notification.permission !== 'granted') return;
+
+            const daysBefore = parseInt(localStorage.getItem('budget_notify_days') || '2');
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+
+            const targetDate = new Date();
+            targetDate.setDate(today.getDate() + daysBefore);
+            targetDate.setHours(23, 59, 59, 999);
+
+            const upcomingExpenses = tableData.filter(row => {
+                const rowDate = new Date(row.date);
+                return row.type === 'expense' && rowDate >= today && rowDate <= targetDate;
+            });
+
+            if (upcomingExpenses.length > 0) {
+                // Check if already notified today to avoid spamming
+                const lastNotify = localStorage.getItem('budget_last_notify_date');
+                const todayStr = today.toISOString().split('T')[0];
+
+                if (lastNotify !== todayStr) {
+                    const firstExp = upcomingExpenses[0];
+                    const msg = upcomingExpenses.length === 1
+                        ? `Spesa in arrivo: ${firstExp.category} (${formatCurrency(firstExp.out)}) il ${firstExp.date}`
+                        : `Hai ${upcomingExpenses.length} spese in arrivo nei prossimi ${daysBefore} giorni.`;
+
+                    if ('serviceWorker' in navigator && navigator.serviceWorker.controller) {
+                        navigator.serviceWorker.ready.then(registration => {
+                            registration.showNotification('Scadenze Budget', {
+                                body: msg,
+                                icon: './icon-192.png',
+                                badge: './icon-192.png',
+                                data: { url: window.location.href }
+                            });
+                        });
+                    } else {
+                        new Notification('Scadenze Budget', { body: msg, icon: './icon-192.png' });
+                    }
+                    localStorage.setItem('budget_last_notify_date', todayStr);
+                }
+            }
+
+            // Update App Badge
+            const todayStr = today.toISOString().split('T')[0];
+            const dueToday = tableData.filter(r => r.date === todayStr && r.type === 'expense').length;
+            if ('setAppBadge' in navigator) {
+                if (dueToday > 0) navigator.setAppBadge(dueToday);
+                else navigator.clearAppBadge();
+            }
         }
         window.closeSettings = function () {
             document.getElementById('settingsModal').classList.remove('open');
@@ -2701,10 +3198,10 @@
         function renderFilterMenu(colKey) {
             const popup = document.getElementById('filterPopup');
 
-            // Get unique values from ALL data (not just visible) to mimic Excel
-            // OR from currently filtered view? Excel usually shows all possibilities.
+            // Get unique values from current year data (or all if year is 'all')
             const uniqueValues = new Set();
-            tableData.forEach(row => {
+            const currentScopeData = getYearData();
+            currentScopeData.forEach(row => {
                 let val = row[colKey];
                 if (colKey === 'recurring') val = val ? 'Sì' : 'No';
                 if (!val && val !== 0 && val !== false) val = '(Vuoto)';
@@ -2792,7 +3289,8 @@
         }
 
         function runFilter() {
-            const filtered = tableData.filter(row => {
+            const yearData = getYearData();
+            const filtered = yearData.filter(row => {
                 return Object.keys(activeFilters).every(key => {
                     let rowVal = row[key];
                     if (key === 'recurring') rowVal = rowVal ? 'Sì' : 'No';
@@ -2800,7 +3298,8 @@
                     return activeFilters[key].has(rowVal.toString());
                 });
             });
-            renderTable(filtered);
+            const initialBalance = getInitialBalanceForYear(currentYear);
+            renderTable(filtered, initialBalance);
         }
 
         // DEPRECATED OLD FILTER
@@ -2827,15 +3326,23 @@
         window.downloadCSV = function () {
             let csvContent = "data:text/csv;charset=utf-8,";
             csvContent += "Data;Categoria;Metodo;Entrate;Uscite;Saldo\n";
-            const exportData = [...tableData].sort((a, b) => new Date(a.date) - new Date(b.date));
-            let runningBalance = 0;
-            exportData.forEach(row => {
+            const yearData = getYearData().sort((a, b) => new Date(a.date) - new Date(b.date));
+            const initialBalance = getInitialBalanceForYear(currentYear);
+            let runningBalance = initialBalance;
+
+            if (currentYear !== 'all' && initialBalance !== 0) {
+                const prevYear = parseInt(currentYear) - 1;
+                csvContent += `01/01/${currentYear};Saldo Iniziale (Riporto ${prevYear});;;;${initialBalance.toFixed(2).replace('.', ',')}\n`;
+            }
+
+            yearData.forEach(row => {
                 runningBalance += (parseFloat(row.in) || 0) - (parseFloat(row.out) || 0);
                 csvContent += `${row.date};${row.category};${row.method || ''};${(row.in || 0).toString().replace('.', ',')};${(row.out || 0).toString().replace('.', ',')};${runningBalance.toFixed(2).replace('.', ',')}\n`;
             });
             const link = document.createElement("a");
             link.setAttribute("href", encodeURI(csvContent));
-            link.setAttribute("download", "finanze_supabaseClient.csv");
+            const fileName = (currentYear && currentYear !== 'all') ? `finanze_${currentYear}.csv` : 'finanze_completo.csv';
+            link.setAttribute("download", fileName);
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
@@ -2843,7 +3350,16 @@
 
         function scrollToCurrentDate() {
             const todayStr = new Date().toISOString().split('T')[0];
-            const rows = document.querySelectorAll('#tableBody tr');
+            const todayYear = todayStr.split('-')[0];
+
+            // If viewing another year, scroll to top of table
+            if (currentYear && currentYear !== 'all' && currentYear !== todayYear) {
+                const scrollContainer = document.querySelector('.scroll-content');
+                if (scrollContainer) scrollContainer.scrollTo({ top: 0, behavior: 'smooth' });
+                return;
+            }
+
+            const rows = document.querySelectorAll('#tableBody tr:not(.initial-balance-row)');
             let targetRow = null;
 
             for (const row of rows) {
@@ -2886,7 +3402,27 @@
 
         // APP STARTUP
         window.onload = async function () {
+            // Restore saved year from memory or default to current year
+            const savedYear = localStorage.getItem('budget_selected_year');
+            if (savedYear) {
+                currentYear = savedYear;
+            } else {
+                currentYear = new Date().getFullYear().toString();
+            }
+
             await init();
+
+            // Handle URL params for shortcuts
+            const urlParams = new URLSearchParams(window.location.search);
+            const action = urlParams.get('action');
+            if (action === 'new') {
+                setTimeout(addRow, 500);
+            } else if (action === 'balance') {
+                setTimeout(scrollToTop, 500);
+            }
+
+            // Check for notifications on startup
+            checkDueDatesForNotifications();
 
             // Setup Scroll Listener for Compact Header
             const scrollContainer = document.querySelector('.scroll-content');

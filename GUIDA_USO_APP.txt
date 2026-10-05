@@ -26,10 +26,13 @@ Ho trasformato il tuo file in una Web App moderna e responsive (PWA). Ecco come 
    
    Questo è il metodo più sicuro e privato per mantenere i dati allineati senza usare server esterni a pagamento.
 
-3. NOVITÀ AGGIUNTE ORA
-   - Layout Mobile ottimizzato: Le card del saldo ora sono impilate per una migliore leggibilità su schermi piccoli.
-   - Pulsante Installazione: Per trasformare il sito in una vera App.
-   - Icona dedicata: Creata un'icona con il simbolo dell'Euro per la schermata home.
-   - Manifesto & Service Worker: Tecnologie necessarie per farla funzionare offline e come app nativa.
+3. GESTIONE MULTIANNO E RIPORTO SALDI (NOVITÀ)
+   - Navigatore Anno: Nella barra in alto puoi selezionare l'anno desiderato con le frecce ◀ ▶ o dal menu a tendina.
+   - Memoria dell'Anno Selezionato: L'anno che selezioni rimane salvato in memoria e viene ripristinato automaticamente ogni volta che riapri l'applicazione.
+   - Riporto Automatico del Saldo: Il saldo finale dell'anno precedente diventa automaticamente il Saldo Iniziale dell'anno successivo. In cima alla tabella viene mostrata una riga bloccata 🔒 con il riporto del saldo precedente, e il conteggio del saldo progressivo parte esattamente da quella cifra.
+   - Grafico e KPI: Le card "Entrate", "Uscite", "Saldo Oggi" e "Previsto Futuro" e il grafico mensile calcolano i valori tenendo conto dell'anno selezionato e del saldo iniziale riportato.
 
-Nota: Per far funzionare l'installazione PWA, il file deve essere idealmente servito tramite un server locale o web (es. GitHub Pages), ma su Android spesso funziona anche aprendo il file html direttamente se il browser lo permette. Se hai difficoltà con l'installazione da file locale, contattami per mettere l'app online (es. su GitHub Pages gratuito).
+4. NOTE GENERALI
+   - I dati vengono salvati sul cloud Supabase in tempo reale.
+   - È possibile esportare in CSV l'anno attualmente selezionato (con riga di saldo iniziale) tramite l'icona 📊.
+
